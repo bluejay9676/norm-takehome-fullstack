@@ -31,3 +31,7 @@ Thumbs.db
 
 # Dependency directories
 bower_components/
+
+
+
+.venv/

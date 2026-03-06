@@ -1,13 +1,10 @@
 from pydantic import BaseModel
 import qdrant_client
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from llama_index.embeddings import OpenAIEmbedding
-from llama_index.llms import OpenAI
-from llama_index.schema import Document
-from llama_index import (
-    VectorStoreIndex,
-    ServiceContext,
-)
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.openai import OpenAI
+from llama_index.core import VectorStoreIndex, Settings
+from llama_index.core.schema import Document
 from dataclasses import dataclass
 import os
 
@@ -62,21 +59,18 @@ class QdrantService:
     
     def connect(self) -> None:
         client = qdrant_client.QdrantClient(location=":memory:")
-                
         vstore = QdrantVectorStore(client=client, collection_name='temp')
 
-        service_context = ServiceContext.from_defaults(
-            embed_model=OpenAIEmbedding(),
-            llm=OpenAI(api_key=key, model="gpt-4")
-            )
+        Settings.embed_model = OpenAIEmbedding()
+        Settings.llm = OpenAI(api_key=key, model="gpt-4")
 
-        self.index = VectorStoreIndex.from_vector_store(
-            vector_store=vstore, 
-            service_context=service_context
-            )
+        self.index = VectorStoreIndex.from_vector_store(vector_store=vstore)
 
-    def load(self, docs = list[Document]):
-        self.index.insert_nodes(docs)
+    def load(self, docs: list[Document] | None = None) -> None:
+        if docs is None:
+            docs = []
+        for doc in docs:
+            self.index.insert(doc)
     
     def query(self, query_str: str) -> Output:
 
