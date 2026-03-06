@@ -47,34 +47,6 @@ class Output(BaseModel):
     citations: list[Citation]
 
 class DocumentService:
-
-    """
-    Update this service to load the pdf and extract its contents.
-    The example code below will help with the data structured required
-    when using the QdrantService.load() method below. Note: for this
-    exercise, ignore the subtle difference between llama-index's 
-    Document and Node classes (i.e, treat them as interchangeable).
-
-    # example code
-    def create_documents() -> list[Document]:
-
-        docs = [
-            Document(
-                metadata={"Section": "Law 1"},
-                text="Theft is punishable by hanging",
-            ),
-            Document(
-                metadata={"Section": "Law 2"},
-                text="Tax evasion is punishable by banishment.",
-            ),
-        ]
-
-        return docs
-
-    The parsing logic should accurately identify and separate different laws or sections within the
-    PDF, ensuring the data structure aligns with the Document class requirements.
-    """
-
     # Process the docs/laws.pdf: first pass = Llama Cloud parse, second pass = line reader (or directory reader) -> Document.
     def create_documents(self, file_path: str, by_paragraph: bool = True) -> Iterator[Document]:
         # ----- First pass: parse with Llama Cloud -----
@@ -118,21 +90,18 @@ class DocumentService:
                             metadata={SECTION_METADATA_KEY: current_section},
                             text=text,
                         )
+
+                num_part = m.group("num")
+                rest = m.group("rest1") or ""
                 # Numbered outline (e.g. "1. Peace", "1.1. The law...")
                 if m.group("num") is not None:
-                    num_part, rest = m.group("num"), (m.group("rest1") or "").strip()
                     if rest and len(rest) < 20 and not rest.endswith("."):
                         current_section = f"{num_part}. {rest}"
                         previous_rest = rest
                     else:
                         current_section = f"{num_part}. {previous_rest}"
                     current_lines = [line] if rest else []
-                # Colon-style header (e.g. "Section Name :" or "Law 1:")
-                else:
-                    title_part = (m.group("title") or "").strip()
-                    rest = (m.group("rest2") or "").strip()
-                    current_section = title_part or "Section"
-                    current_lines = [line] if rest else []
+
             else:
                 if line.strip() or current_section is not None:
                     current_lines.append(line)
@@ -168,31 +137,6 @@ class QdrantService:
             self.index.insert(doc)
     
     def query(self, query_str: str) -> Output:
-
-        """
-        This method needs to initialize the query engine, run the query, and return
-        the result as a pydantic Output class. This is what will be returned as
-        JSON via the FastAPI endpount. Fee free to do this however you'd like, but
-        a its worth noting that the llama-index package has a CitationQueryEngine...
-
-        Also, be sure to make use of self.k (the number of vectors to return based
-        on semantic similarity).
-
-        # Example output object
-        citations = [
-            Citation(source="Law 1", text="Theft is punishable by hanging"),
-            Citation(source="Law 2", text="Tax evasion is punishable by banishment."),
-        ]
-
-        output = Output(
-            query=query_str, 
-            response=response_text, 
-            citations=citations
-            )
-        
-        return output
-
-        """
         query_engine = CitationQueryEngine.from_args(
             self.index,
             similarity_top_k=self.k,
@@ -202,7 +146,7 @@ class QdrantService:
         citations = transform_nodes_to_citations(response.source_nodes)
         return Output(
             query=query_str,
-            response=response,
+            response=str(response),
             citations=citations
         )
        
