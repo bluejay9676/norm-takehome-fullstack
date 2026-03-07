@@ -1,9 +1,26 @@
-This repository contains a client and server codebase. 
+## Setup guide:
 
-## Server Repository:
+- setup llama parse & openai api account and set the api keys as env var
+  LLAMA_CLOUD_API_KEY
+  OPENAI_API_KEY
+- run the following to get the docker up and running
 
-This codebase contains a list of laws (`docs/laws.pdf`) taken from the fictional series “Game of Thrones” (randomly pulled from a wiki fandom site... unfortunately knowledge of the series does not provide an edge on this assignment). Your task is to implement a new service (described in take home exercise document) and provide access to that service via a FastAPI endpoint running in a docker container. Please replace this readme with the steps required to run your app.
+```
+// From the base of the repo
+docker build -t norm-takehome-fullstack .
+```
 
-## Client Repository 
+```
+docker run -d -p 8080:80 -e OPENAI_API_KEY=$OPENAI_API_KEY -e LLAMA_CLOUD_API_KEY=$LLAMA_CLOUD_API_KEY norm-takehome-fullstack
+```
 
-In the `frontend` folder you'll find a light NextJS app with it's own README including instructions to run. Your task here is to build a minimal client experience that utilizes the service build in part 1.
+- check the local server's endpoint (or use the swagger)
+
+```
+curl -X POST http://localhost:8080/query -H "Content-Type: application/json" -d '{"query": "What happens if I steal a bread?"}'
+```
+
+## Context:
+
+- I think the only part that requires deeper explanation than just reading the code is DocumentService.create_documents
+- TODO

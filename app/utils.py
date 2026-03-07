@@ -22,10 +22,8 @@ llama_cloud = LlamaCloud(api_key=os.environ['LLAMA_CLOUD_API_KEY'])
 
 SECTION_METADATA_KEY = "Section"
 
-@dataclass
-class Input:
+class Input(BaseModel):
     query: str
-    file_path: str
 
 @dataclass
 class Citation:
@@ -48,7 +46,7 @@ class Output(BaseModel):
 
 class DocumentService:
     # Process the docs/laws.pdf: first pass = Llama Cloud parse, second pass = line reader (or directory reader) -> Document.
-    def create_documents(self, file_path: str, by_paragraph: bool = True) -> Iterator[Document]:
+    def create_documents(self, file_path: str) -> Iterator[Document]:
         # ----- First pass: parse with Llama Cloud -----
         if LLAMA_CLOUD_PARSE_JOB_ID:
             result = llama_cloud.parsing.get(
@@ -149,20 +147,6 @@ class QdrantService:
             response=str(response),
             citations=citations
         )
-
-
-
-# if __name__ == "__main__":
-#     # Example workflow
-#     doc_serivce = DocumentService() # implemented
-#     docs = doc_serivce.create_documents("../docs/laws.pdf") 
-
-#     index = QdrantService() # implemented
-#     index.connect() # implemented
-#     index.load(list(docs)) # implemented
-
-#     output = index.query("what happens if I steal?") 
-#     print(output)
 
 
 
