@@ -53,7 +53,7 @@ class DocumentService:
         if LLAMA_CLOUD_PARSE_JOB_ID:
             result = llama_cloud.parsing.get(
                 job_id=LLAMA_CLOUD_PARSE_JOB_ID,
-                expand=["markdown_full", "text_full", "metadata", "text"],
+                expand=["text_full", "metadata", "text"],
             )
         else:
             file_obj = llama_cloud.files.create(file=file_path, purpose="parse")
@@ -61,7 +61,7 @@ class DocumentService:
                 file_id=file_obj.id,
                 tier="agentic",
                 version="latest",
-                expand=["markdown_full", "text_full", "metadata", "text"],
+                expand=["text_full", "metadata", "text"],
             )
 
         # ----- Second pass: re-parse full text, extract hierarchy, yield Document per section -----
@@ -149,19 +149,20 @@ class QdrantService:
             response=str(response),
             citations=citations
         )
-       
 
-if __name__ == "__main__":
-    # Example workflow
-    doc_serivce = DocumentService() # implemented
-    docs = doc_serivce.create_documents("../docs/laws.pdf") 
 
-    index = QdrantService() # implemented
-    index.connect() # implemented
-    index.load(list(docs)) # implemented
 
-    output = index.query("what happens if I steal?") 
-    print(output)
+# if __name__ == "__main__":
+#     # Example workflow
+#     doc_serivce = DocumentService() # implemented
+#     docs = doc_serivce.create_documents("../docs/laws.pdf") 
+
+#     index = QdrantService() # implemented
+#     index.connect() # implemented
+#     index.load(list(docs)) # implemented
+
+#     output = index.query("what happens if I steal?") 
+#     print(output)
 
 
 
