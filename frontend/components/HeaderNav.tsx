@@ -15,6 +15,7 @@ import {
   MenuList,
   Icon,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import { FiChevronDown } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
@@ -31,6 +32,7 @@ export default function HeaderNav({
 }: HeaderProps): React.ReactNode {
   const [isHovered, setIsHovered] = useState(false);
   const color = isHovered ? '#2800D7' : '#5E6272';
+  const toast = useToast();
 
   return (
     <Flex
@@ -120,7 +122,14 @@ export default function HeaderNav({
                 _hover={{ bg: '#EEEBFF', color: '#2800D7' }}
                 _focus={{ bg: '#EEEBFF', color: '#2800D7' }}
                 _active={{ bg: '#EEEBFF', color: '#2800D7' }}
-                onClick={signOut}
+                onClick={() => {
+                  toast({
+                    title: "You're not going anywhere",
+                    status: 'info',
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                }}
               >
                 <Box
                   paddingRight="8px"

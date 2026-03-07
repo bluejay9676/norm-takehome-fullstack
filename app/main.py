@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from app.utils import Output, Input
 from app.utils import DocumentService, QdrantService
 from contextlib import asynccontextmanager
@@ -13,7 +14,7 @@ async def lifespan(app: FastAPI):
     # Load the ML model
     services[DOCUMENT_SERVICE] = DocumentService()
     documents = list(services[DOCUMENT_SERVICE].create_documents("../docs/laws.pdf"))
-    services[QDRANT_SERVICE] = QdrantService()
+    services[QDRANT_SERVICE] = QdrantService(k=5)
     services[QDRANT_SERVICE].connect()
     services[QDRANT_SERVICE].load(documents)
     yield
@@ -22,11 +23,24 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 """
 Please create an endpoint that accepts a query string, e.g., "what happens if I steal 
 from the Sept?" and returns a JSON response serialized from the Pydantic Output class.
 """
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 
 @app.post("/query")
 async def legal_advice(input_data: Input) -> Output:
