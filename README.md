@@ -30,11 +30,14 @@ npm run dev
 
 ### Assumptions:
 
-- I made a choice to outsource pdf parsing - something I would've done in real life production setting. I would have to account for how often we have to parse new documents but in this particular situation we only have to parse 1 document once.
+- I made a choice to outsource pdf parsing - i would make the same choice in prod setting since i expect llama parse to be more accurate
+- I would have to account for how often we have to parse new documents (does it make sense economically?) but in this particular situation we only have to parse 1 document once.
 
 ### Next step
 
 - Spend more time on more robust pdf parsing
+- Show citations - click to actual parts of pdf
+- allow user to correct the parsing
 - SSE for a true chat-like experience
 - Clean up hardcoded codes and put in remote secret keys (vault, aws sk) and read on server init & frontend init
 
