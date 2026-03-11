@@ -15,7 +15,7 @@ import re
 
 
 
-LLAMA_CLOUD_PARSE_JOB_ID = "pjb-amjzbjn4myi6pp43vtk3kkxfilpc"
+LLAMA_CLOUD_PARSE_JOB_ID = ""
 
 key = os.environ["OPENAI_API_KEY"]
 llama_cloud = LlamaCloud(api_key=os.environ['LLAMA_CLOUD_API_KEY'])
@@ -118,22 +118,21 @@ class QdrantService:
     def __init__(self, k: int = 2):
         self.index = None
         self.k = k
-    
+        self._client = None
+        self._vector_store = None
+
     def connect(self) -> None:
-        client = qdrant_client.QdrantClient(location=":memory:")
-        vstore = QdrantVectorStore(client=client, collection_name='temp')
+        self._client = qdrant_client.QdrantClient(location=":memory:")
+        self._vector_store = QdrantVectorStore(client=self._client, collection_name='temp')
 
         Settings.embed_model = OpenAIEmbedding()
         Settings.llm = OpenAI(api_key=key, model="gpt-4")
 
-        self.index = VectorStoreIndex.from_vector_store(vector_store=vstore)
-
     def load(self, docs: list[Document] | None = None) -> None:
         if docs is None:
             docs = []
-        for doc in docs:
-            self.index.insert(doc)
-    
+        self.index = VectorStoreIndex.from_documents(docs, vector_store=self._vector_store)
+        
     def query(self, query_str: str) -> Output:
         query_engine = CitationQueryEngine.from_args(
             self.index,

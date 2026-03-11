@@ -66,7 +66,7 @@ https://www.anthropic.com/research/labor-market-impacts
 
 - very different answer now vs 2 months ago
 - before i wouldve said typical be close to your users etc
-- now you can actually give the power to the users to personalize their experience 
+- now you can actually give the power to the users to personalize their experience
 - this isnt impossible anymore imo
 
 - Quick anecdote:
@@ -86,3 +86,7 @@ through adoption of our Regulatory AI agents as oversight. At Norm Ai, we're com
 public policy, reflecting our society's collective will, and ushering in a new era of regulatory intelligence and
 societal-AI alignment.
 ```
+
+Q:
+
+- billable hurdle?
