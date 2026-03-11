@@ -13,7 +13,7 @@ services = {}
 async def lifespan(app: FastAPI):
     # Load the ML model
     services[DOCUMENT_SERVICE] = DocumentService()
-    documents = list(services[DOCUMENT_SERVICE].create_documents("../docs/laws.pdf"))
+    documents = list(services[DOCUMENT_SERVICE].create_documents("docs/laws.pdf"))
 
     services[QDRANT_SERVICE] = QdrantService(k=5)
     services[QDRANT_SERVICE].connect()
