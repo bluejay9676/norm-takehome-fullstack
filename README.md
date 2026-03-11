@@ -64,6 +64,11 @@ https://www.anthropic.com/research/labor-market-impacts
 
 >
 
+- very different answer now vs 2 months ago
+- before i wouldve said typical be close to your users etc
+- now you can actually give the power to the users to personalize their experience 
+- this isnt impossible anymore imo
+
 - Quick anecdote:
 - the CTO I worked with at Glencoco is building major.build - an internal tool vibecoding platform.
 - Micah - who was a killer sales guy on Glencoco, later joined in as a full time design partner, then sort of took over the whole operation after we shutdown - now with tools like loveable is making some insane tools and workflows.
