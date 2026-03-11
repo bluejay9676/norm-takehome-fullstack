@@ -38,6 +38,7 @@ npm run dev
 - Spend more time on more robust pdf parsing
 - Show citations - click to actual parts of pdf
 - allow user to correct the parsing
+- allow user to choose base model
 - SSE for a true chat-like experience
 - Clean up hardcoded codes and put in remote secret keys (vault, aws sk) and read on server init & frontend init
 
